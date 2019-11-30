@@ -6,6 +6,28 @@
 
 using namespace std;
 
+struct No
+{
+    int value;
+    No *next;
+    No *prev;
+    No(int value)
+    {
+        this->value = value;
+        this->next = this;
+        this->prev = this;
+    }
+};
+
+void insert(No *ref, int value)
+{
+    No *no = new No(value);
+    no->next = ref->next;
+    no->prev = ref;
+    ref->next = no;
+    no->next->prev = no;
+}
+
 void ite_bubbleSort(int Vet[], int n)
 {
     for (int i = 1; i < n; i++)
@@ -35,32 +57,75 @@ void rec_bubbleSort(int Vet[], int n)
     rec_bubbleSort(Vet, n - 1);
 }
 
+void ite_bubble(No *start)
+{
+    int swapped;
+    struct No *ptr1;
+    struct No *lptr = start;
+
+    /* Checking for empty list */
+    if (start == nullptr)
+        return;
+
+    do
+    {
+        swapped = 0;
+        ptr1 = start;
+
+        while (ptr1->next != lptr)
+        {
+            if (ptr1->value > ptr1->next->value)
+            {
+                swap(ptr1->value, ptr1->next->value);
+                swapped = 1;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    } while (swapped);
+}
+
+void show(No *lista)
+{
+    cout << "[ ";
+    No *node = lista;
+    do
+    {
+        cout << lista->value << " ";
+        lista = lista->next;
+    } while (lista != node);
+    cout << "]\n";
+}
+
 int main()
 {
     srand(1);
     clock_t t;
-    int size = 20000;
-    int vector[size];
-    int vector2[size];
+    int size = 10;
+    No *lista = nullptr;
 
     for (int i = 0; i < size; i++)
     {
         int num = rand() % 191 + 10;
-        vector[i] = num;
-        vector2[i] = num;
+        if (lista == nullptr)
+        {
+            lista = new No(num);
+        }
+        else
+        {
+            insert(lista->prev, num);
+        }
     }
 
-    // Dheymison
-    t = clock();
-    rec_bubbleSort(vector, size);
-    t = clock() - t;
-
-    cout << "rec = " << ((float)t) / CLOCKS_PER_SEC << endl;
+    show(lista);
 
     t = clock();
-    ite_bubbleSort(vector2, size);
+    ite_bubble(lista);
     t = clock() - t;
 
     cout << "ite = " << ((float)t) / CLOCKS_PER_SEC << endl;
+
+    show(lista);
+
     return 0;
 }
