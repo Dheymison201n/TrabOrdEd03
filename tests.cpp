@@ -28,7 +28,7 @@ void insert(No *ref, int value)
     no->next->prev = no;
 }
 
-void ite_bubbleSort(int Vet[], int n)
+void ite_bubble_vector(int Vet[], int n)
 {
     for (int i = 1; i < n; i++)
     {
@@ -42,7 +42,7 @@ void ite_bubbleSort(int Vet[], int n)
     }
 }
 
-void rec_bubbleSort(int Vet[], int n)
+void rec_bubble_vector(int Vet[], int n)
 {
     // Caso base
     if (n == 1) // se o tamanho do vetor for 1, retorne.
@@ -54,16 +54,15 @@ void rec_bubbleSort(int Vet[], int n)
 
     // O maior elemento é fixo,
     // recorrente para o vetor restante
-    rec_bubbleSort(Vet, n - 1);
+    rec_bubble_vector(Vet, n - 1);
 }
 
-void ite_bubble(No *start)
+void ite_bubble_list(No *start)
 {
     int swapped;
     struct No *ptr1;
     struct No *lptr = start;
 
-    /* Checking for empty list */
     if (start == nullptr)
         return;
 
@@ -83,6 +82,12 @@ void ite_bubble(No *start)
         }
         lptr = ptr1;
     } while (swapped);
+}
+
+void rec_bubble_list(No *start)
+{
+    if (start == nullptr || start->next == start)
+        return;
 }
 
 void show(No *lista)
@@ -120,7 +125,7 @@ int main()
     show(lista);
 
     t = clock();
-    ite_bubble(lista);
+    ite_bubble_list(lista);
     t = clock() - t;
 
     cout << "ite = " << ((float)t) / CLOCKS_PER_SEC << endl;
