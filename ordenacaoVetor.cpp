@@ -51,11 +51,36 @@ void ite_insertionSort(int Vet[], int n)
     }
 }
 
+void rec_insertionSort(int Vet[], int n)
+{
+    // Base case
+    if (n <= 1)
+        return;
+
+    // Sort first n-1 elements
+    rec_insertionSort(Vet, n - 1);
+
+    // Insert last element at its correct position
+    // in sorted Vetay.
+    int last = Vet[n - 1];
+    int j = n - 2;
+
+    /* Move elements of Vet[0..i-1], that are 
+      greater than key, to one position ahead 
+      of their current position */
+    while (j >= 0 && Vet[j] > last)
+    {
+        Vet[j + 1] = Vet[j];
+        j--;
+    }
+    Vet[j + 1] = last;
+}
+
 /*----------------------------------------------------------------------------------------------------------------*/
 
 void ite_selectionSort(int Vet[], int n)
 {
-    int i, j, min, aux;
+    int i, j, min;
     for (i = 0; i < (n - 1); i++)
     {
         min = i;
@@ -66,6 +91,35 @@ void ite_selectionSort(int Vet[], int n)
         }
         swap(Vet[i], Vet[min]);
     }
+}
+
+int mini(int a[], int i, int j)
+{
+    if (i == j)
+        return i;
+
+    // Find minimum of remaining elements
+    int k = mini(a, i + 1, j);
+
+    // Return minimum of current and remaining.
+    return (a[i] < a[k]) ? i : k;
+}
+
+void rec_selectionSort(int Vet[], int n, int i = 0)
+{
+    // Return when starting and size are same
+    if (i == n)
+        return;
+
+    // calling minimum i function for minimum i
+    int k = mini(Vet, i, n - 1);
+
+    // Swapping when i nd minimum i are not same
+    if (k != i)
+        swap(Vet[k], Vet[i]);
+
+    // Recursively calling selection sort function
+    rec_selectionSort(Vet, n, i + 1);
 }
 
 /*----------------------------------------------------------------------------------------------------------------*/
@@ -125,18 +179,19 @@ void rec_mergeSort(int Vet[], int inicio, int fim)
 
 void ite_mergeSort(int Vet[], int n)
 {
-    int k;
-    int inicio;
-
-    for (k = 1; k <= n - 1; k = 2 * k)
+    int b = 1;
+    while (b < n)
     {
-        for (inicio = 0; inicio < n - 1; inicio += 2 * k)
+        int p = 0;
+        while (p + b < n)
         {
-            int meio = min(inicio + k - 1, n - 1);
-
-            int final = min(inicio + 2 * k - 1, n - 1);
-            merge(Vet, inicio, meio, final);
+            int r = p + 2 * b;
+            if (r > n)
+                r = n;
+            merge(Vet, p, (p + b), r);
+            p = p + 2 * b;
         }
+        b = 2 * b;
     }
 }
 
@@ -151,14 +206,14 @@ void ite_heapSort()
 int partition(int Vet[], int inicio, int final)
 {
     int pivot = Vet[final]; // pivot
-    int i = (inicio - 1);   // Index of smaller element
+    int i = (inicio - 1);   // i of smaller element
 
     for (int j = inicio; j <= final - 1; j++)
     {
         // If current element is smaller than the pivot
         if (Vet[j] < pivot)
         {
-            i++; // increment index of smaller element
+            i++; // increment i of smaller element
             swap(Vet[i], Vet[j]);
         }
     }
@@ -241,6 +296,16 @@ void bogoSort(int Vet[], int n)
     // embaralhar(a, n);   // o vetor novemente
 }
 
+void show(int Vet[], int n)
+{
+    cout << "[ ";
+    for (int i = 0; i < n; i++)
+    {
+        cout << Vet[i] << " ";
+    }
+    cout << "]";
+}
+
 int main()
 {
     srand(1);
@@ -257,25 +322,25 @@ int main()
         vector[i] = num;
     }
 
+    // show(vector, size);
+
     t = clock();
     // ite_bubbleSort(vector, size);
     // rec_bubbleSort(vector, size);
     // ite_insertionSort(vector, size);
+    // rec_insertionSort(vector, size);
     // ite_selectionSort(vector, size);
+    // rec_selectionSort(vector, size);
     // rec_mergeSort(vector, 0, size - 1);
-    ite_mergeSort(vector, size);
+    // ite_mergeSort(vector, size);
     // rec_quickSort(vector, 0, size);
     // ite_quickSort(vector, 0, size);
+
     t = clock() - t;
 
     cout << "Tempo = " << ((float)t) / CLOCKS_PER_SEC << endl;
 
-    cout << "[ ";
-    for (int i = 0; i < size; i++)
-    {
-        cout << vector[i] << " ";
-    }
-    cout << "]";
+    show(vector, size);
 
     return 0;
 }
